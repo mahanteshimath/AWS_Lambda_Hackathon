@@ -14,14 +14,6 @@ with col1:
 with col2:
     st.image("./src/DH2.PNG", caption="This is Now", use_column_width=True)
 
-# Function to fetch AQI data
-def get_aqi_data(city, api_key):
-    url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&aqi=yes"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
 
 # Function to categorize PM2.5 levels based on DEFRA Index
 def categorize_pm25_defra(pm25_value):
@@ -72,7 +64,7 @@ def execute_query(query):
 # Create Snowflake table
 def create_table():
     create_table_query = """
-    CREATE TABLE IF NOT EXISTS T01_AQI_FOR_INDIAN_STATES (
+    CREATE TABLE IF NOT EXISTS T01_AQI_AWS_FOR_INDIAN_STATES (
         State VARCHAR,
         City VARCHAR,
         PM25 FLOAT,
@@ -103,7 +95,7 @@ def insert_data_to_snowflake(dataframe):
         )
         cursor = conn.cursor()
         insert_query = """
-        INSERT INTO T01_AQI_FOR_INDIAN_STATES (
+        INSERT INTO T01_AQI_AWS_FOR_INDIAN_STATES (
             State, City, PM25, PM25_Category, PM10, CO, O3, NO2, SO2, US_EPA_Index
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """

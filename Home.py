@@ -25,14 +25,13 @@ st.set_page_config(
 Architecture_page = st.Page(
     "pages/Architecture.py",
     title="Architecture",
-    icon=":material/home:"
+    icon=":material/home:",
     default=True,
-
 )
 
-AQI = st.Page(
-    "pages/Realtime_AQI_Across_India.py",
-    title="Realtime AQI Across India",
+Weather = st.Page(
+    "pages/Realtime_Weather_Across_India.py",
+    title="Realtime Weather Across India",
     icon=":material/aq:",
 )
 
@@ -42,7 +41,7 @@ AQI = st.Page(
 pg = st.navigation(
     {
         "Info": [Architecture_page],
-        "Weather insights": [AQI],
+        "Weather insights": [Weather],
     }
 )
 
