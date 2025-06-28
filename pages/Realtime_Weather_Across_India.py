@@ -61,29 +61,36 @@ if st.session_state.aqi_data_loaded:
     # --- Enhanced Visualization Section ---
     st.subheader(":blue[City-wise AQI Overview]")
     if isinstance(df, pd.DataFrame) and not df.empty:
-        # Show a summary table
-        st.dataframe(df.head(20), use_container_width=True)
-
+        # Location filter
+        if 'LOCATION_NAME' in df.columns:
+            locations = df['LOCATION_NAME'].dropna().unique().tolist()
+            selected_location = st.selectbox('Select Location', ['All'] + sorted(locations))
+            if selected_location != 'All':
+                filtered_df = df[df['LOCATION_NAME'] == selected_location]
+            else:
+                filtered_df = df
+        else:
+            filtered_df = df
+        st.dataframe(filtered_df.head(20), use_container_width=True)
         # Show AQI by city as a bar chart (if 'CITY' and 'AQI' columns exist)
-        if 'CITY' in df.columns and 'AQI' in df.columns:
+        if 'CITY' in filtered_df.columns and 'AQI' in filtered_df.columns:
             st.plotly_chart(
                 px.bar(
-                    df.sort_values('AQI', ascending=False),
+                    filtered_df.sort_values('AQI', ascending=False),
                     x='CITY', y='AQI', color='AQI',
                     color_continuous_scale='RdYlGn_r',
-                    title='AQI by City',
+                    title=f"AQI by City{' for ' + selected_location if selected_location != 'All' else ''}",
                     labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
                 ),
                 use_container_width=True
             )
-
         # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
-        if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns and 'CITY' in df.columns:
+        if 'INSRT_TIMESTAMP' in filtered_df.columns and 'AQI' in filtered_df.columns and 'CITY' in filtered_df.columns:
             st.plotly_chart(
                 px.line(
-                    df.sort_values('INSRT_TIMESTAMP'),
+                    filtered_df.sort_values('INSRT_TIMESTAMP'),
                     x='INSRT_TIMESTAMP', y='AQI', color='CITY',
-                    title='AQI Trend Over Time by City',
+                    title=f"AQI Trend Over Time by City{' for ' + selected_location if selected_location != 'All' else ''}",
                     labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
                 ),
                 use_container_width=True
@@ -91,8 +98,6 @@ if st.session_state.aqi_data_loaded:
     else:
         st.info('No data available to visualize.')
     st.success("Data fetched and pushed to Snowflake successfully!")
-
-
 
 st.header("💡 Recommendations")
 st.image("./src/AQI.jpeg", caption="10 AI-specific ways to reduce air pollution in Delhi")
