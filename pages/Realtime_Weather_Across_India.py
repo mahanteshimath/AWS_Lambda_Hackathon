@@ -46,7 +46,7 @@ st.subheader(":blue[Real-time Air Quality Index (AQI) across Indian states.]")
 
 if st.button("Fetch and push latest AQI Data to snowflake"):
 
-    Q1=f'''SELECT * FROM IND_DB.IND_SCH.IND_DB.IND_SCH.WEATHER_DATA'''
+    Q1=f'''SELECT * FROM IND_DB.IND_SCH.WEATHER_DATA'''
     R1 = execute_query(Q1)
     r1_expander = st.expander("Data sets used in this entire analysis.")
     R1_DF = pd.DataFrame(R1)
