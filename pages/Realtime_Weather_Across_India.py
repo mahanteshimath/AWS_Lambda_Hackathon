@@ -59,7 +59,7 @@ if st.session_state.aqi_data_loaded:
     r1_expander.write(R1_DF)
     df = R1_DF  # Use R1_DF everywhere for visualization
     # --- Enhanced Visualization Section ---
-    st.subheader(":blue[City-wise AQI Overview]")
+    st.subheader(":blue[Location-wise Weather Overview]")
     if isinstance(df, pd.DataFrame) and not df.empty:
         # Location filter
         if 'LOCATION_NAME' in df.columns:
@@ -72,26 +72,50 @@ if st.session_state.aqi_data_loaded:
         else:
             filtered_df = df
         st.dataframe(filtered_df.head(20), use_container_width=True)
-        # Show AQI by city as a bar chart (if 'CITY' and 'AQI' columns exist)
-        if 'CITY' in filtered_df.columns and 'AQI' in filtered_df.columns:
+        # Temperature by Location
+        if 'LOCATION_NAME' in filtered_df.columns and 'TEMP_C' in filtered_df.columns:
             st.plotly_chart(
                 px.bar(
-                    filtered_df.sort_values('AQI', ascending=False),
-                    x='CITY', y='AQI', color='AQI',
-                    color_continuous_scale='RdYlGn_r',
-                    title=f"AQI by City{' for ' + selected_location if selected_location != 'All' else ''}",
-                    labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
+                    filtered_df.sort_values('TEMP_C', ascending=False),
+                    x='LOCATION_NAME', y='TEMP_C', color='TEMP_C',
+                    color_continuous_scale='Bluered',
+                    title=f"Temperature (°C) by Location{' for ' + selected_location if selected_location != 'All' else ''}",
+                    labels={'TEMP_C': 'Temperature (°C)', 'LOCATION_NAME': 'Location'}
                 ),
                 use_container_width=True
             )
-        # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
-        if 'INSRT_TIMESTAMP' in filtered_df.columns and 'AQI' in filtered_df.columns and 'CITY' in filtered_df.columns:
+        # Humidity by Location
+        if 'LOCATION_NAME' in filtered_df.columns and 'HUMIDITY' in filtered_df.columns:
+            st.plotly_chart(
+                px.bar(
+                    filtered_df.sort_values('HUMIDITY', ascending=False),
+                    x='LOCATION_NAME', y='HUMIDITY', color='HUMIDITY',
+                    color_continuous_scale='Viridis',
+                    title=f"Humidity (%) by Location{' for ' + selected_location if selected_location != 'All' else ''}",
+                    labels={'HUMIDITY': 'Humidity (%)', 'LOCATION_NAME': 'Location'}
+                ),
+                use_container_width=True
+            )
+        # Wind Speed by Location
+        if 'LOCATION_NAME' in filtered_df.columns and 'WIND_KPH' in filtered_df.columns:
+            st.plotly_chart(
+                px.bar(
+                    filtered_df.sort_values('WIND_KPH', ascending=False),
+                    x='LOCATION_NAME', y='WIND_KPH', color='WIND_KPH',
+                    color_continuous_scale='Cividis',
+                    title=f"Wind Speed (kph) by Location{' for ' + selected_location if selected_location != 'All' else ''}",
+                    labels={'WIND_KPH': 'Wind Speed (kph)', 'LOCATION_NAME': 'Location'}
+                ),
+                use_container_width=True
+            )
+        # Temperature trend over time (if time column exists)
+        if 'LOCALTIME_STR' in filtered_df.columns and 'TEMP_C' in filtered_df.columns and 'LOCATION_NAME' in filtered_df.columns:
             st.plotly_chart(
                 px.line(
-                    filtered_df.sort_values('INSRT_TIMESTAMP'),
-                    x='INSRT_TIMESTAMP', y='AQI', color='CITY',
-                    title=f"AQI Trend Over Time by City{' for ' + selected_location if selected_location != 'All' else ''}",
-                    labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
+                    filtered_df.sort_values('LOCALTIME_STR'),
+                    x='LOCALTIME_STR', y='TEMP_C', color='LOCATION_NAME',
+                    title=f"Temperature Trend Over Time{' for ' + selected_location if selected_location != 'All' else ''}",
+                    labels={'LOCALTIME_STR': 'Local Time', 'TEMP_C': 'Temperature (°C)'}
                 ),
                 use_container_width=True
             )
