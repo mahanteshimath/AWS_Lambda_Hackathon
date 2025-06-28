@@ -5,6 +5,7 @@ import plotly.express as px
 import snowflake.connector
 from datetime import datetime
 import pytz
+import boto3
 ist_timezone = pytz.timezone('Asia/Kolkata')
 current_time_ist = datetime.now(ist_timezone)
 current_time_ist = current_time_ist.strftime("%Y-%m-%d %H:%M:%S")
@@ -48,6 +49,21 @@ if 'aqi_data_loaded' not in st.session_state:
     st.session_state.aqi_data_loaded = False
 
 if st.button("Fetch and push latest AQI Data to snowflake"):
+    # Trigger AWS Lambda function
+    try:
+        lambda_client = boto3.client(
+            'lambda',
+            region_name=st.session_state.region_name,
+            aws_access_key_id=st.session_state.aws_access_key_id,
+            aws_secret_access_key=st.session_state.aws_secret_access_key
+        )
+        response = lambda_client.invoke(
+            FunctionName='snowstream',
+            InvocationType='RequestResponse'
+        )
+        st.success("AWS Lambda function 'snowstream' triggered successfully!")
+    except Exception as e:
+        st.error(f"Failed to trigger AWS Lambda: {e}")
     st.session_state.aqi_data_loaded = True
 
 if st.session_state.aqi_data_loaded:

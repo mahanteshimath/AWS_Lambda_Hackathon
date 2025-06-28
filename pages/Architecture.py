@@ -18,6 +18,12 @@ if 'user' not in st.session_state:
     st.session_state.user = db_credentials["user"]
 if 'password' not in st.session_state:
     st.session_state.password = db_credentials["password"]
+if 'region_name' not in st.session_state:
+    st.session_state.region_name = db_credentials["region_name"]
+if 'aws_access_key_id' not in st.session_state:
+    st.session_state.aws_access_key_id = db_credentials["aws_access_key_id"]
+if 'aws_secret_access_key' not in st.session_state:
+    st.session_state.aws_secret_access_key = db_credentials["aws_secret_access_key"]
 
     
 
@@ -29,6 +35,8 @@ def store_credentials():
     st.session_state.schema = db_credentials["schema"]
     st.session_state.user = db_credentials["user"]
     st.session_state.password = db_credentials["password"]
+    st.session_state.region_name = db_credentials["region_name"]
+    st.session_state.aws_access_key_id = db_credentials["aws_access_key_id"]
 
 def create_snowflake_connection():
     try:
