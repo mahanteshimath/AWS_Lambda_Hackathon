@@ -59,7 +59,7 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
         # Show a summary table
         st.dataframe(df.head(20), use_container_width=True)
 
-        # Show AQI by city as a bar chart (if columns exist)
+        # Show AQI by city as a bar chart (if 'CITY' and 'AQI' columns exist)
         if 'CITY' in df.columns and 'AQI' in df.columns:
             st.plotly_chart(
                 px.bar(
@@ -72,7 +72,7 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
                 use_container_width=True
             )
 
-        # Show time series if timestamp exists
+        # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
         if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns:
             st.plotly_chart(
                 px.line(
