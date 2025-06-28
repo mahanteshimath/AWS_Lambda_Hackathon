@@ -138,6 +138,45 @@ These measures can directly address Delhi's primary pollution sources, like vehi
 
 """)
 
+# --- CSV Visualization Section ---
+st.subheader(":blue[Upload or View Local Weather Data CSV]")
+
+# Option to upload or use existing CSV
+df_csv = None
+csv_path = "./weather data.csv"
+try:
+    df_csv = pd.read_csv(csv_path)
+    if not df_csv.empty:
+        st.success(f"Loaded local CSV: {csv_path}")
+        st.dataframe(df_csv.head(20), use_container_width=True)
+        # Show bar chart if columns exist
+        if 'CITY' in df_csv.columns and 'AQI' in df_csv.columns:
+            st.plotly_chart(
+                px.bar(
+                    df_csv.sort_values('AQI', ascending=False),
+                    x='CITY', y='AQI', color='AQI',
+                    color_continuous_scale='RdYlGn_r',
+                    title='CSV AQI by City',
+                    labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
+                ),
+                use_container_width=True
+            )
+        # Show line chart if columns exist
+        if 'INSRT_TIMESTAMP' in df_csv.columns and 'AQI' in df_csv.columns and 'CITY' in df_csv.columns:
+            st.plotly_chart(
+                px.line(
+                    df_csv.sort_values('INSRT_TIMESTAMP'),
+                    x='INSRT_TIMESTAMP', y='AQI', color='CITY',
+                    title='CSV AQI Trend Over Time by City',
+                    labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
+                ),
+                use_container_width=True
+            )
+    else:
+        st.info('Local CSV is empty or not found.')
+except Exception as e:
+    st.warning(f"Could not load local CSV: {e}")
+
 st.markdown(
     '''
     <style>
