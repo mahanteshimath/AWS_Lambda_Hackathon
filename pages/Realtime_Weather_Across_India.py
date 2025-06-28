@@ -56,7 +56,7 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
     df=R1_DF
     # --- Enhanced Visualization Section ---
     st.subheader(":blue[City-wise AQI Overview]")
-    if not df.empty:
+    if isinstance(df, pd.DataFrame) and not df.empty:
         # Show a summary table
         st.dataframe(df.head(20), use_container_width=True)
 
@@ -74,7 +74,7 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
             )
 
         # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
-        if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns:
+        if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns and 'CITY' in df.columns:
             st.plotly_chart(
                 px.line(
                     df.sort_values('INSRT_TIMESTAMP'),
