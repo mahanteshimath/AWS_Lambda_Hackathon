@@ -53,6 +53,38 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
     R1_DF.index = R1_DF.index + 1
     r1_expander.write(R1_DF)
     df=R1_DF
+    # --- Enhanced Visualization Section ---
+    st.subheader(":blue[City-wise AQI Overview]")
+    if not df.empty:
+        # Show a summary table
+        st.dataframe(df.head(20), use_container_width=True)
+
+        # Show AQI by city as a bar chart (if columns exist)
+        if 'CITY' in df.columns and 'AQI' in df.columns:
+            st.plotly_chart(
+                px.bar(
+                    df.sort_values('AQI', ascending=False),
+                    x='CITY', y='AQI', color='AQI',
+                    color_continuous_scale='RdYlGn_r',
+                    title='AQI by City',
+                    labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
+                ),
+                use_container_width=True
+            )
+
+        # Show time series if timestamp exists
+        if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns:
+            st.plotly_chart(
+                px.line(
+                    df.sort_values('INSRT_TIMESTAMP'),
+                    x='INSRT_TIMESTAMP', y='AQI', color='CITY',
+                    title='AQI Trend Over Time by City',
+                    labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
+                ),
+                use_container_width=True
+            )
+    else:
+        st.info('No data available to visualize.')
 
 # # Custom CSS
 # st.markdown("""
