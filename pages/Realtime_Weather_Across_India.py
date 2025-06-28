@@ -38,7 +38,8 @@ def execute_query(query):
         st.error(f"Error executing query: {str(e)}")
         return None
 
-# Visualization
+# Visualizatio
+
 st.title(":blue[ India LIVE AQI Dashboard 🌍]")
 st.subheader(":blue[Real-time Air Quality Index (AQI) across Indian states.]")
 
