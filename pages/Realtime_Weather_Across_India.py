@@ -43,10 +43,14 @@ def execute_query(query):
 st.title(":blue[ India LIVE AQI Dashboard 🌍]")
 st.subheader(":blue[Real-time Air Quality Index (AQI) across Indian states.]")
 
-
+# Add this before the button to initialize the session state flag
+if 'aqi_data_loaded' not in st.session_state:
+    st.session_state.aqi_data_loaded = False
 
 if st.button("Fetch and push latest AQI Data to snowflake"):
+    st.session_state.aqi_data_loaded = True
 
+if st.session_state.aqi_data_loaded:
     Q1=f'''SELECT * FROM IND_DB.IND_SCH.WEATHER_DATA'''
     R1 = execute_query(Q1)
     r1_expander = st.expander("Data sets used in this entire analysis.")
@@ -57,11 +61,14 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
     # --- Enhanced Visualization Section ---
     st.subheader(":blue[City-wise AQI Overview]")
     if isinstance(df, pd.DataFrame) and not df.empty:
+        st.write("DataFrame is not empty.")  # Debugging
+        st.write(df.columns)  # Debugging: Print column names
         # Show a summary table
         st.dataframe(df.head(20), use_container_width=True)
 
-        # Show AQI by city as a bar chart (if 'CITY' and 'AQI' columns exist)
+        # Show AQI by city as a bar chart (if 'CITY' in df.columns and 'AQI' in df.columns)
         if 'CITY' in df.columns and 'AQI' in df.columns:
+            st.write("CITY and AQI columns are present.")  # Debugging
             st.plotly_chart(
                 px.bar(
                     df.sort_values('AQI', ascending=False),
@@ -75,6 +82,7 @@ if st.button("Fetch and push latest AQI Data to snowflake"):
 
         # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
         if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns and 'CITY' in df.columns:
+            st.write("INSRT_TIMESTAMP, AQI, and CITY columns are present.")  # Debugging
             st.plotly_chart(
                 px.line(
                     df.sort_values('INSRT_TIMESTAMP'),
