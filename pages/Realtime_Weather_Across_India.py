@@ -14,24 +14,6 @@ with col1:
 with col2:
     st.image("./src/DH2.PNG", caption="This is Now", use_column_width=True)
 
-db_credentials = st.secrets["db_credentials"]
-
-# --- Ensure required session state variables are initialized and provide sidebar inputs ---
-with st.sidebar:
-    st.header("Snowflake Connection Settings")
-    for key, label in [
-        ("account", "Account"),
-        ("role", "Role"),
-        ("warehouse", "Warehouse"),
-        ("database", "Database"),
-        ("schema", "Schema"),
-        ("user", "User"),
-        ("password", "Password")
-    ]:
-        if key not in st.session_state:
-            st.session_state[key] = ""
-        st.session_state[key] = st.text_input(label, value=st.session_state[key], type="password" if key=="password" else "default")
-
 def execute_query(query):
     try:
         conn = snowflake.connector.connect(
