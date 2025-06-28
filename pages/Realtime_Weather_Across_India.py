@@ -58,112 +58,41 @@ if st.session_state.aqi_data_loaded:
     R1_DF.index = R1_DF.index + 1
     r1_expander.write(R1_DF)
     df=R1_DF
+    # --- Enhanced Visualization Section ---
+    st.subheader(":blue[City-wise AQI Overview]")
+    if isinstance(df, pd.DataFrame) and not df.empty:
+        # Show a summary table
+        st.dataframe(df.head(20), use_container_width=True)
+
+        # Show AQI by city as a bar chart (if 'CITY' and 'AQI' columns exist)
+        if 'CITY' in df.columns and 'AQI' in df.columns:
+            st.plotly_chart(
+                px.bar(
+                    df.sort_values('AQI', ascending=False),
+                    x='CITY', y='AQI', color='AQI',
+                    color_continuous_scale='RdYlGn_r',
+                    title='AQI by City',
+                    labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
+                ),
+                use_container_width=True
+            )
+
+        # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
+        if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns and 'CITY' in df.columns:
+            st.plotly_chart(
+                px.line(
+                    df.sort_values('INSRT_TIMESTAMP'),
+                    x='INSRT_TIMESTAMP', y='AQI', color='CITY',
+                    title='AQI Trend Over Time by City',
+                    labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
+                ),
+                use_container_width=True
+            )
+    else:
+        st.info('No data available to visualize.')
     st.success("Data fetched and pushed to Snowflake successfully!")
 
-    
-# # Custom CSS
-# st.markdown("""
-#     <style>
-#     .metric-container {
-#         display: flex;
-#         gap: 1rem;
-#         justify-content: space-around;
-#         margin: 1rem 0;
-#     }
-#     .metric-box {
-#         background-color: black;
-#         border: 3px solid #ddd;
-#         border-radius: 8px;
-#         padding: 10px;
-#         text-align: center;
-#         width: 150px;
-#         box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Glow effect */
-#         transition: box-shadow 0.3s ease-in-out;
-#     }
-#     .metric-text {
-#         color: white; /* White text */
-#         font-weight: bold; /* Bold text */
-#     }
-#     </style>
-# """, unsafe_allow_html=True)
 
-# # Default Values
-
-# default_state = "Delhi"
-# default_city = "New Delhi"
-
-# # Sidebar Filters
-# state_filter = st.selectbox("Select CITY", df["CITY"].unique(), index=df["CITY"].unique().tolist().index(default_city))
-
-# # Filter Data
-# filtered_data = df[(df["CITY"] == state_filter)]
-
-
-# if not filtered_data.empty:
-#     # Metrics Section
-#     latest_entry = filtered_data.iloc[-1]
-#     st.subheader(f"Air Quality Metrics for  {state_filter} as of :  {latest_entry['INSRT_TIMESTAMP']}")
-    
-#     # metric_html = f"""
-#     #     <div class="metric-container">
-#     #         <div class="metric-box"><strong>PM2.5</strong><br>{latest_entry['PM25']}<br><small>{latest_entry['PM25_CATEGORY']}</small></div>
-#     #         <div class="metric-box"><strong>PM10</strong><br>{latest_entry['PM10']}</div>
-#     #         <div class="metric-box"><strong>US EPA Index</strong><br>{latest_entry['US_EPA_INDEX']}</div>
-#     #         <div class="metric-box"><strong>CO</strong><br>{latest_entry['CO']}</div>
-#     #         <div class="metric-box"><strong>O3</strong><br>{latest_entry['O3']}</div>
-#     #         <div class="metric-box"><strong>NO2</strong><br>{latest_entry['NO2']}</div>
-#     #         <div class="metric-box"><strong>SO2</strong><br>{latest_entry['SO2']}</div>
-#     #     </div>
-#     # """
-#     # st.markdown(metric_html, unsafe_allow_html=True)
-#     us_epa_index_descriptions = {
-#     1: 'Good',
-#     2: 'Moderate',
-#     3: 'Unhealthy for sensitive group',
-#     4: 'Unhealthy',
-#     5: 'Very Unhealthy',
-#     6: 'Hazardous'
-#     }
-
-#     metric_html = f"""
-#     <div class="metric-container">
-#         <div class="metric-box"><strong>PM2.5</strong><br>{latest_entry['PM25']}<br><small>{latest_entry['PM25_CATEGORY']}</small></div>
-#         <div class="metric-box"><strong>PM10</strong><br>{latest_entry['PM10']}</div>
-#         <div class="metric-box"><strong>US EPA Index</strong><br>{latest_entry['US_EPA_INDEX']}<br><small>{us_epa_index_descriptions.get(latest_entry['US_EPA_INDEX'], 'Unknown')}</small></div>
-#         <div class="metric-box"><strong>CO</strong><br>{latest_entry['CO']}</div>
-#         <div class="metric-box"><strong>O3</strong><br>{latest_entry['O3']}</div>
-#         <div class="metric-box"><strong>NO2</strong><br>{latest_entry['NO2']}</div>
-#         <div class="metric-box"><strong>SO2</strong><br>{latest_entry['SO2']}</div>
-#         <div class="metric-box"><strong>AQI</strong><br>{latest_entry['AQI']}</div>
-#         <div class="metric-box"><strong>AIR_QUALITY</strong><br>{latest_entry['AIR_QUALITY']}</div>
-#     </div>
-#     """
-#     st.markdown(metric_html, unsafe_allow_html=True)
-    
-#     # Historical Data Table
-#     st.write("### Historical Data")
-#     st.dataframe(filtered_data)
-    
-#     # Visualizations
-#     st.write("### Trend Air Quality Data Over Time")
-#     # st.line_chart(filtered_data.set_index("INSRT_TIMESTAMP")[["PM25", "PM10", "CO", "O3", "NO2", "SO2"]])
-
-#     # Create a line chart with Plotly
-#     fig = px.line(filtered_data, x='INSRT_TIMESTAMP', y=["PM25", "PM10", "CO", "O3", "NO2", "SO2"],
-#                 labels={"INSRT_TIMESTAMP": "Timestamp", "value": "Concentration (µg/m³)"},
-#                 title="Air Quality Data Over Time", markers=True)
-
-#     # Display the plot
-#     st.plotly_chart(fig, use_container_width=True)
-
-#     fig_aqi = px.line(filtered_data, x='INSRT_TIMESTAMP', y=["AQI"],
-#                 labels={"INSRT_TIMESTAMP": "Timestamp", "value": "AQI"},
-#                 title="Trend AQI  Over Time", markers=True)
-
-#     # Display the plot
-#     st.plotly_chart(fig_aqi, use_container_width=True)
-# else:
-#     st.warning("No data available for the selected filters.")
 
 st.header("💡 Recommendations")
 st.image("./src/AQI.jpeg", caption="10 AI-specific ways to reduce air pollution in Delhi")
