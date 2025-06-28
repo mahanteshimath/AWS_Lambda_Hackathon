@@ -66,36 +66,114 @@ st.markdown("[⭐Please give star to motivate](https://github.com/mahanteshimath
 # Display the HTML content as an embedded diagram in Streamlit
 components.html(html_content, width=800, height=600)
 
+st.image("./src/indian-major-cities-weather-insights.jpg", caption="Architecture Diagram", use_column_width=True)
+
 st.markdown('''
 
-This architecture diagram titled **"INDIAN-INFRA-AI-INSIGHTS"** illustrates a data processing and analytics pipeline leveraging Snowflake, data sources, document processing, and a front-end interface using Streamlit. Here's a breakdown of each component and data flow:
+Absolutely! Let’s break down this architecture diagram step by step.
 
-1.**Data Sources**
-   - **Snowflake Data Marketplace**: Sources datasets related to infrastructure, weather, and other public data.
-   - **data.gov.in**: Provides open government datasets for analysis.
-   - **Custom Datasets**: Uploads from external sources are processed into Snowflake for analysis.
-   - **Weather API**: Fetches Air Quality Index (AQI) data and other weather-related metrics.
+---
 
-2. **Snowflake Database (Snowflake DB)**:
-   - **Data Ingestion and Processing**: All data sources are ingested into Snowflake, where the data is stored and processed. This includes cleaning, transforming, and preparing the data for analysis. The processed data is saved in **final views** or **functions** within Snowflake.
-   - These views and functions represent structured, ready-to-use datasets for downstream analysis or embedding into the application.
+## 📊 Title: **INDIAN-MAJOR-CITIES-WEATHER-INSIGHTS**
 
-3. **Data Processing and Embedding for Analysis**:
-   - **Documents**: This section represents document-based data (PDFs, Word files, etc.), which is **extracted and chunked** into manageable parts. These chunks are processed to create **embeddings**—vector representations of the data, which can be used in machine learning or AI applications for similarity search, natural language processing, or other analyses.
-   - **Vector Store**: The embeddings are stored in a vector database. This enables quick retrieval based on similarity and facilitates advanced AI-driven queries on the data.
+This solution is designed to provide weather insights for major Indian cities by fetching, storing, and visualizing the data.
 
-4. **Data Delivery to Streamlit**:
-   - **Streamlit**: The processed data and insights are visualized in a front-end interface using Streamlit, a popular Python framework for creating interactive web apps for data science and machine learning applications. Streamlit allows users to explore and interact with the insights generated from the processed data.
+---
 
-5. **Data Flow**:
-   - The arrows in the diagram represent data flow between these components. Data moves from data sources to the Snowflake DB, undergoes transformation and embedding, and is then either stored in the vector store for AI applications or made directly available for visualization in Streamlit.
+## 🔄 Detailed Component Flow
 
-### Key Points:
-- **Purpose**: The architecture is designed to facilitate **data-driven insights** and AI applications, with Snowflake as the core data warehouse and Streamlit as the visualization layer.
-- **Processing Steps**: Data is sourced, processed, embedded (if required), and visualized, making it suitable for interactive exploration or advanced AI tasks.
-- **Scalability**: The use of Snowflake and vector stores suggests a scalable solution, capable of handling large datasets and complex AI-driven analyses. 
+### 1️⃣ **Weather App (External Weather API)**
 
-This architecture is suitable for data-driven applications focusing on infrastructure or government-related analytics in India, leveraging AI and visualization tools to generate actionable insights.
+* This is a third-party weather API (like OpenWeatherMap, WeatherStack, etc.)
+* It provides weather data (temperature, humidity, wind speed, etc.) for Indian cities via HTTP endpoints (REST APIs).
+* The system will call this API periodically (e.g., every hour or day) to get updated data.
+
+---
+
+### 2️⃣ **AWS Lambda (ETL Function)**
+
+* This represents a serverless compute component (AWS Lambda).
+* Responsibilities:
+
+  * Fetch weather data from the external weather API.
+  * Transform or clean the data if needed (e.g., convert units, handle missing data).
+  * Prepare the data for loading into Snowflake.
+* Benefits of using Lambda:
+
+  * No need to manage servers.
+  * Pay only for execution time.
+  * Easy to trigger periodically using AWS CloudWatch Events.
+
+---
+
+### 📝 **Label: `Weather data fetched`**
+
+* Indicates the data flow from the weather API to Lambda.
+* Lambda is responsible for fetching this data.
+
+---
+
+### 3️⃣ **Snowflake DB (Data Warehouse)**
+
+* A cloud-based data warehouse (Snowflake) is used to store weather data.
+
+* Responsibilities:
+
+  * Persist weather data for historical analysis.
+  * Support querying, aggregation, and analytical workloads.
+
+* Data is loaded into structured tables like:
+
+  ```
+  weather_data
+  -----------------------------
+  city | date | temp | humidity
+  -----------------------------
+  ```
+
+* Lambda will insert the processed data into Snowflake using Snowflake connectors.
+
+---
+
+### 4️⃣ **Streamlit (Visualization Layer / Web App)**
+
+* A Streamlit app is used to build an interactive dashboard.
+
+* Responsibilities:
+
+  * Query data from Snowflake.
+  * Generate visualizations like temperature trends, humidity comparisons across cities, etc.
+  * Provide an easy-to-use web interface for users.
+
+* Streamlit can be hosted on a simple server or cloud service to provide browser-based access.
+
+---
+
+## ⚙️ **End-to-End Flow Summary**
+
+1. 🔁 **Fetch:** Lambda periodically triggers and fetches data from the weather API.
+2. 🔄 **Transform & Load:** Lambda processes the data and inserts it into the Snowflake database.
+3. 📊 **Query & Visualize:** Streamlit queries data from Snowflake and builds dashboards that end users can interact with to see weather insights.
+
+---
+
+## 🚀 **Advantages of this architecture**
+
+✅ **Scalable & Serverless:**
+
+* Using Lambda and Snowflake means minimal infra management and easy scaling.
+
+✅ **Pay-as-you-go:**
+
+* Lambda and Snowflake pricing is based on usage.
+
+✅ **Quick UI:**
+
+* Streamlit makes it fast to prototype and build dashboards.
+
+✅ **Separation of Concerns:**
+
+* Lambda handles ETL, Snowflake handles storage and analytics, Streamlit handles presentation.
 
 ''')
 
