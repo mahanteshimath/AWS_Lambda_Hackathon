@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-
+db_credentials = st.secrets["db_credentials"]
 
 # Load the HTML content from the file
 with open("./src/Architectureembed.txt", "r") as file:
