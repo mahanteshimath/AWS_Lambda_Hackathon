@@ -2,6 +2,56 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 db_credentials = st.secrets["db_credentials"]
+# Accessing the database credentials
+db_credentials = st.secrets["db_credentials"]
+
+if 'account' not in st.session_state:
+    st.session_state.account = db_credentials["account"]
+if 'role' not in st.session_state:
+    st.session_state.role = db_credentials["role"]
+if 'warehouse' not in st.session_state:
+    st.session_state.warehouse = db_credentials["warehouse"]
+if 'database' not in st.session_state:
+    st.session_state.database = db_credentials["database"]
+if 'schema' not in st.session_state:
+    st.session_state.schema = db_credentials["schema"]
+if 'user' not in st.session_state:
+    st.session_state.user = db_credentials["user"]
+if 'password' not in st.session_state:
+    st.session_state.password = db_credentials["password"]
+if 'weatherapi_key' not in st.session_state:
+    st.session_state.weatherapi_key = db_credentials["weatherapi_key"]
+if 'google_api_key' not in st.session_state:
+    st.session_state.google_api_key = db_credentials["google_api_key"]
+    
+
+def store_credentials():
+    st.session_state.account = db_credentials["account"]
+    st.session_state.role = db_credentials["role"]
+    st.session_state.warehouse = db_credentials["warehouse"]
+    st.session_state.database = db_credentials["database"]
+    st.session_state.schema = db_credentials["schema"]
+    st.session_state.user = db_credentials["user"]
+    st.session_state.password = db_credentials["password"]
+
+def create_snowflake_connection():
+    try:
+        conn = snowflake.connector.connect(
+            account=st.session_state.account,
+            role=st.session_state.role,
+            warehouse=st.session_state.warehouse,
+            database=st.session_state.database,
+            schema=st.session_state.schema,
+            user=st.session_state.user,
+            password=st.session_state.password,
+            client_session_keep_alive=True
+        )
+        st.toast("Connection to Snowflake successfully!", icon='🎉')
+        time.sleep(.5)
+        st.balloons()
+    except Exception as e:
+        st.error(f"Error connecting to Snowflake: {str(e)}")
+    return conn
 
 # Load the HTML content from the file
 with open("./src/Architectureembed.txt", "r") as file:
