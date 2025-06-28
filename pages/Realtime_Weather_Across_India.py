@@ -48,7 +48,7 @@ st.subheader(":blue[Real-time Air Quality Index (AQI) across Indian states.]")
 if 'aqi_data_loaded' not in st.session_state:
     st.session_state.aqi_data_loaded = False
 
-if st.button("Fetch and push latest AQI Data to snowflake"):
+if st.button("Trigger AWS Lambda to push data to Snowflake"):
     # Trigger AWS Lambda function
     try:
         lambda_client = boto3.client(
