@@ -58,43 +58,9 @@ if st.session_state.aqi_data_loaded:
     R1_DF.index = R1_DF.index + 1
     r1_expander.write(R1_DF)
     df=R1_DF
-# --- Enhanced Visualization Section ---
-st.subheader(":blue[City-wise AQI Overview]")
-if isinstance(df, pd.DataFrame) and not df.empty:
-    st.write("DataFrame is not empty.")  # Debugging
-    st.write(df.columns)  # Debugging: Print column names
-    # Show a summary table
-    st.dataframe(df.head(20), use_container_width=True)
+    st.success("Data fetched and pushed to Snowflake successfully!")
 
-    # Show AQI by city as a bar chart (if 'CITY' in df.columns and 'AQI' in df.columns)
-    if 'CITY' in df.columns and 'AQI' in df.columns:
-        st.write("CITY and AQI columns are present.")  # Debugging
-        st.plotly_chart(
-            px.bar(
-                df.sort_values('AQI', ascending=False),
-                x='CITY', y='AQI', color='AQI',
-                color_continuous_scale='RdYlGn_r',
-                title='AQI by City',
-                labels={'AQI': 'Air Quality Index', 'CITY': 'City'}
-            ),
-            use_container_width=True
-        )
-
-    # Show AQI trend over time by city (if 'INSRT_TIMESTAMP' and 'AQI' columns exist)
-    if 'INSRT_TIMESTAMP' in df.columns and 'AQI' in df.columns and 'CITY' in df.columns:
-        st.write("INSRT_TIMESTAMP, AQI, and CITY columns are present.")  # Debugging
-        st.plotly_chart(
-            px.line(
-                df.sort_values('INSRT_TIMESTAMP'),
-                x='INSRT_TIMESTAMP', y='AQI', color='CITY',
-                title='AQI Trend Over Time by City',
-                labels={'INSRT_TIMESTAMP': 'Timestamp', 'AQI': 'Air Quality Index'}
-            ),
-            use_container_width=True
-        )
-else:
-    st.info('No data available to visualize.')
-
+    
 # # Custom CSS
 # st.markdown("""
 #     <style>
