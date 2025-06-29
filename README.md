@@ -23,9 +23,6 @@ This project provides a scalable, serverless weather insights dashboard for majo
 - `pages/Realtime_Weather_Across_India.py`: Main dashboard for weather data, Lambda trigger, and visualizations.
 - `src/`: Contains images and architecture diagram assets.
 
-## Developers
-- **Darshan**
-- **Mahantesh**
 
 ## How to Run
 1. Install requirements: `pip install -r requirements.txt`
@@ -36,7 +33,7 @@ This project provides a scalable, serverless weather insights dashboard for majo
 This project was inspired by the need for real-time, scalable, and actionable weather insights for Indian cities, leveraging modern cloud and data technologies. The goal was to empower citizens, researchers, and policymakers with up-to-date weather and air quality data, and to demonstrate the power of serverless architectures for public good.
 
 ## What it does
-- Fetches real-time weather and AQI data for major Indian cities using external APIs.
+- Fetches real-time weather  data for major Indian cities using external APIs.
 - Triggers an AWS Lambda function to process and push the latest data into a Snowflake data warehouse.
 - Provides a Streamlit dashboard for interactive visualization, filtering, and analysis of weather data by location.
 - Offers AI-driven recommendations for improving air quality.
