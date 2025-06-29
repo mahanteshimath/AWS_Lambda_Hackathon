@@ -58,14 +58,7 @@ def create_snowflake_connection():
         st.error(f"Error connecting to Snowflake: {str(e)}")
     return conn
 
-# Load the HTML content from the file
-with open("./src/Architectureembed.txt", "r") as file:
-    html_content = file.read()
 
-
-st.markdown("[⭐Please give star to motivate](https://github.com/mahanteshimath/AI_for_Good_SF/stargazers)", unsafe_allow_html=True)
-# Display the HTML content as an embedded diagram in Streamlit
-components.html(html_content, width=800, height=600)
 
 st.image("./src/indian-major-cities-weather-insights.jpg", caption="Architecture Diagram", use_column_width=True)
 
