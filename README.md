@@ -4,6 +4,7 @@
 This project provides a scalable, serverless weather insights dashboard for major Indian cities, leveraging AWS Lambda, Snowflake, and Streamlit. It fetches real-time weather data, stores it in a Snowflake data warehouse, and visualizes it interactively for end users.
 
 ## Architecture
+![alt text](image.png)
 - **Weather API**: External weather data is fetched periodically (e.g., hourly) from a third-party API.
 - **AWS Lambda (ETL)**: A Lambda function (named `snowstream` in region `us-west-2`) is triggered to fetch, clean, and load weather data into Snowflake. The Streamlit app can trigger this Lambda function on demand.
 - **Snowflake**: Stores all weather data in a structured table for historical and analytical queries.
