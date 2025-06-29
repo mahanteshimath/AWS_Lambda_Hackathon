@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+
 # Accessing the database credentials
 db_credentials = st.secrets["db_credentials"]
 
@@ -70,13 +71,11 @@ st.image("./src/indian-major-cities-weather-insights.jpg", caption="Architecture
 
 st.markdown('''
 
-
 ## 📊 Title: **INDIAN-MAJOR-CITIES-WEATHER-INSIGHTS**
 
 This solution is designed to provide weather insights for major Indian cities by fetching, storing, and visualizing the data.
 
 ---
-
 ## 🔄 Detailed Component Flow
 
 ### 1️⃣ **Weather App (External Weather API)**
