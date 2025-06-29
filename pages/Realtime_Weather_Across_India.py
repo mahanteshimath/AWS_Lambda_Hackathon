@@ -41,7 +41,7 @@ def execute_query(query):
 
 # Visualizatio
 
-st.title(":blue[ Indias realtime weather insights in major cities 🌍]")
+st.title(":blue[ Serverless weather insights dashboard for major Indian cities 🌍]")
 st.subheader(":blue[Real-time Weather Data across Indian states.]")
 
 # Add this before the button to initialize the session state flag
